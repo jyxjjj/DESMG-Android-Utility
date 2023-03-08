@@ -111,13 +111,12 @@
         android:id="@+id/copyright1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/copyright1"
         android:textSize="16sp" />
 
     <TextView
+        android:id="@+id/copyright2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/copyright2"
         android:textSize="16sp" />
 
 </LinearLayout>

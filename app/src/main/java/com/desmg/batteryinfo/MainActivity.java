@@ -30,12 +30,15 @@ public class MainActivity extends AppCompatActivity {
         broadcastReceiver = new ReceiverHandler();
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         ctx.registerReceiver(broadcastReceiver, intentFilter);
-        TextView copy = findViewById(R.id.copyright1);
-        final Calendar c = Calendar.getInstance();
-        c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
-        String mYear = String.valueOf(c.get(Calendar.YEAR)); // 获取当前年份
 
-        copy.setText("Copyright &#169; " + mYear);
+        TextView copy1 = findViewById(R.id.copyright1);
+        TextView copy2 = findViewById(R.id.copyright2);
+
+        final Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("Etc/GMT-8"));
+        String mYear = String.valueOf(c.get(Calendar.YEAR)); // 获取当前年份
+        copy1.setText("Copyright" + " " + "\u00A9" + " " + mYear);
+        copy2.setText("DESMG All Rights Reserved.");
     }
 
     public class ReceiverHandler extends BroadcastReceiver {
