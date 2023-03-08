@@ -1,10 +1,14 @@
 package com.desmg.batteryinfo;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.icu.util.Calendar;
 import android.icu.util.TimeZone;
 import android.os.BatteryManager;
@@ -13,23 +17,26 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.util.Date;
 
 @SuppressLint("SetTextI18n")
 public class MainActivity extends AppCompatActivity {
     BroadcastReceiver broadcastReceiver;
+    IntentFilter intentFilterBatteryChanged;
     Context ctx;
+    NotificationManagerCompat notificationManagerCompat;
+    NotificationCompat.Builder builder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ctx = getApplicationContext();
-        broadcastReceiver = new ReceiverHandler();
-        IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        ctx.registerReceiver(broadcastReceiver, intentFilter);
 
         TextView copy1 = findViewById(R.id.copyright1);
         TextView copy2 = findViewById(R.id.copyright2);
@@ -39,6 +46,37 @@ public class MainActivity extends AppCompatActivity {
         String mYear = String.valueOf(c.get(Calendar.YEAR)); // 获取当前年份
         copy1.setText("Copyright" + " " + "\u00A9" + " " + mYear);
         copy2.setText("DESMG All Rights Reserved.");
+
+        ctx = getApplicationContext();
+        this.registerNotification();
+        this.registerBroadcastReceiver();
+    }
+
+    private void registerBroadcastReceiver() {
+        broadcastReceiver = new ReceiverHandler();
+        intentFilterBatteryChanged = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        ctx.registerReceiver(broadcastReceiver, intentFilterBatteryChanged);
+    }
+
+    private void registerNotification() {
+        notificationManagerCompat = NotificationManagerCompat.from(ctx);
+
+        final NotificationChannel channel = new NotificationChannel("com.desmg.BatteryInfo", "BatteryInfo", NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setDescription("BatteryInfo");
+        channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);// 测试发现MIUI10在手动开放权限后将会显示锁屏通知但默认权限为禁止
+        channel.setSound(null, null);
+        channel.setShowBadge(false);// 将不会显示角标但权限依然开放
+        channel.enableLights(false);// 默认权限为禁止
+        channel.enableVibration(false);// 将不会震动标但权限依然开放
+
+        final NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
+
+        builder = new NotificationCompat.Builder(ctx, "com.desmg.BatteryInfo");
+        builder.setSmallIcon(R.drawable.ic_launcher_foreground);
+        builder.setOnlyAlertOnce(true);// 正常
+        builder.setBadgeIconType(NotificationCompat.BADGE_ICON_NONE); // setBadgeIconType 去掉角标
+        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT); // 默认优先级
     }
 
     public class ReceiverHandler extends BroadcastReceiver {
@@ -172,11 +210,30 @@ public class MainActivity extends AppCompatActivity {
             String tech = intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
             tv11.setText("技术：" + tech);
 
+            this.sendNotification(
+                    tv1.getText(),
+                    tv2.getText() + "\r\n" + tv3.getText() + "\r\n" + tv4.getText() + "\r\n" + tv6.getText() + "\r\n" + tv7.getText() + "\r\n" + tv9.getText()
+            );
+
             Handler h = new Handler(Looper.myLooper());
-            h.postDelayed(() -> {
-                ctx.unregisterReceiver(broadcastReceiver);
-                ctx.registerReceiver(broadcastReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-            }, 1000);
+            h.postDelayed(
+                    () -> {
+                        ctx.unregisterReceiver(broadcastReceiver);
+                        ctx.registerReceiver(broadcastReceiver, intentFilterBatteryChanged);
+                    },
+                    1000);
+        }
+
+        private void sendNotification(@Nullable CharSequence csTitle, @Nullable CharSequence csText) {
+            NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
+            bigTextStyle.setSummaryText("电池信息");
+            bigTextStyle.setBigContentTitle(csTitle);
+            bigTextStyle.bigText(csText);
+            builder.setStyle(bigTextStyle);
+            // 如果使用经典样式通知可能无法正常展开列表 需要使用原生样式
+            if (ActivityCompat.checkSelfPermission(ctx, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                notificationManagerCompat.notify(0, builder.build());
+            }
         }
     }
 }
