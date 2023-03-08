@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.icu.util.Calendar;
+import android.icu.util.TimeZone;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +14,8 @@ import android.os.Looper;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Date;
 
 @SuppressLint("SetTextI18n")
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +30,12 @@ public class MainActivity extends AppCompatActivity {
         broadcastReceiver = new ReceiverHandler();
         IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
         ctx.registerReceiver(broadcastReceiver, intentFilter);
+        TextView copy = findViewById(R.id.copyright1);
+        final Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+        String mYear = String.valueOf(c.get(Calendar.YEAR)); // 获取当前年份
+
+        copy.setText("Copyright &#169; " + mYear);
     }
 
     public class ReceiverHandler extends BroadcastReceiver {
