@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
             TextView tv11 = findViewById(R.id.tv11);
             //endregion TextView
 
+            //region BatteryInfo
             switch (intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)) {
                 case BatteryManager.BATTERY_STATUS_UNKNOWN:
                     tv1.setText("状态：状态未知");
@@ -209,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
             tv10.setText(healthText);
             String tech = intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY);
             tv11.setText("技术：" + tech);
+            //endregion
 
             this.sendNotification(
                     tv1.getText(),
@@ -233,6 +235,24 @@ public class MainActivity extends AppCompatActivity {
             // 如果使用经典样式通知可能无法正常展开列表 需要使用原生样式
             if (ActivityCompat.checkSelfPermission(ctx, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                 notificationManagerCompat.notify(0, builder.build());
+            }
+        }
+    }
+
+    public static class AutoRunHandler extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case Intent.ACTION_BATTERY_CHANGED:
+                case Intent.ACTION_BOOT_COMPLETED:
+                case Intent.ACTION_POWER_CONNECTED:
+                case Intent.ACTION_POWER_DISCONNECTED:
+                    Intent mainIntent = new Intent(context, MainActivity.class);
+                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(mainIntent);
+                    break;
+                default:
+                    break;
             }
         }
     }
