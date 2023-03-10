@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "BatteryInfo"
+rootProject.name = "DESMG-Android-Utility"
