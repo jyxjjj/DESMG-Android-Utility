@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
+        TextView appname = findViewById(R.id.appname);
+        appname.setText(String.format("%s %s", getString(R.string.app_name), BuildConfig.VERSION_NAME));
         TextView copy1 = findViewById(R.id.copyright1);
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("Etc/GMT-8"));

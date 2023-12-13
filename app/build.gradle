@@ -15,8 +15,8 @@ android {
         //noinspection OldTargetApi
         targetSdkVersion 33
         buildToolsVersion = '33.0.2'
-        versionCode 3
-        versionName '3.0.0'
+        versionCode 30001
+        versionName '3.0.1'
         buildConfigField("String", "SERVER_URL", envProperties.getProperty("SERVER_URL"))
         buildConfigField("String", "API_KEY", envProperties.getProperty("API_KEY"))
     }
