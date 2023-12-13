@@ -52,7 +52,7 @@ public class Sms2TelegramService extends Service {
                 }
             }
         } catch (Exception e) {
-            Log.e("ERROR", e.getMessage());
+            Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
         }
     }
 

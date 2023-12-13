@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class SmsHelper {
     public static String getAllSms(Context ctx) {
@@ -26,7 +27,7 @@ public class SmsHelper {
         try {
             Uri uri = Telephony.Sms.Inbox.CONTENT_URI;
             Cursor cursor = ctx.getContentResolver().query(uri, null, null, null, Telephony.Sms.DEFAULT_SORT_ORDER);
-            if (cursor.moveToFirst()) {
+            if (Objects.requireNonNull(cursor).moveToFirst()) {
                 do {
                     int intDate = cursor.getColumnIndex(Telephony.Sms.DATE);
                     String date = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)).format(new Date(cursor.getLong(intDate)));
@@ -43,7 +44,7 @@ public class SmsHelper {
                         jsonObject.put("address", address);
                         jsonObject.put("body", body);
                     } catch (JSONException e) {
-                        Log.e("ERROR", e.getMessage());
+                        Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
                     }
                     jsonArray.put(jsonObject);
                 } while (cursor.moveToNext());
@@ -54,7 +55,7 @@ public class SmsHelper {
                 cursor.close();
             }
         } catch (SQLiteException e) {
-            Log.e("ERROR", e.getMessage());
+            Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
         }
         return jsonArray.toString().replace("\\/", "/");
     }

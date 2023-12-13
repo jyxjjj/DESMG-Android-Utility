@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeZone(TimeZone.getTimeZone("Etc/GMT-8"));
         String mYear = String.valueOf(calendar.get(Calendar.YEAR));
-        copy1.setText(String.format("Copyright \u00A9 %s", mYear));
+        copy1.setText(String.format("Copyright © %s", mYear));
         TextView copy2 = findViewById(R.id.copyright2);
         copy2.setText("DESMG All Rights Reserved.");
     }

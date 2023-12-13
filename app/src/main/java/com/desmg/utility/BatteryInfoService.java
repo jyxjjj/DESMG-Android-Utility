@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.rxjava3.core.Observable;
@@ -59,7 +60,7 @@ public class BatteryInfoService extends Service {
                 }
             }
         } catch (Exception e) {
-            Log.e("ERROR", e.getMessage());
+            Log.e("ERROR", Objects.requireNonNull(e.getMessage()));
         }
         try {
             ctx.unregisterReceiver(batteryReceiver);
@@ -70,9 +71,9 @@ public class BatteryInfoService extends Service {
                 try {
                     ctx.unregisterReceiver(batteryReceiver);
                 } catch (Exception e3) {
-                    Log.e("ERROR", e1.getMessage());
-                    Log.e("ERROR", e2.getMessage());
-                    Log.e("ERROR", e3.getMessage());
+                    Log.e("ERROR", Objects.requireNonNull(e1.getMessage()));
+                    Log.e("ERROR", Objects.requireNonNull(e2.getMessage()));
+                    Log.e("ERROR", Objects.requireNonNull(e3.getMessage()));
                 }
             }
         }
@@ -81,7 +82,7 @@ public class BatteryInfoService extends Service {
     private class BatteryInfo extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!intent.getAction().equals(Intent.ACTION_BATTERY_CHANGED)) {
+            if (!Objects.equals(intent.getAction(), Intent.ACTION_BATTERY_CHANGED)) {
                 return;
             }
 
@@ -249,9 +250,9 @@ public class BatteryInfoService extends Service {
                     try {
                         ctx.unregisterReceiver(batteryReceiver);
                     } catch (Exception e3) {
-                        Log.e("ERROR", e1.getMessage());
-                        Log.e("ERROR", e2.getMessage());
-                        Log.e("ERROR", e3.getMessage());
+                        Log.e("ERROR", Objects.requireNonNull(e1.getMessage()));
+                        Log.e("ERROR", Objects.requireNonNull(e2.getMessage()));
+                        Log.e("ERROR", Objects.requireNonNull(e3.getMessage()));
                     }
                 }
             }
@@ -264,9 +265,9 @@ public class BatteryInfoService extends Service {
                     try {
                         ctx.registerReceiver(batteryReceiver, intentFilterBatteryChanged);
                     } catch (Exception e3) {
-                        Log.e("ERROR", e1.getMessage());
-                        Log.e("ERROR", e2.getMessage());
-                        Log.e("ERROR", e3.getMessage());
+                        Log.e("ERROR", Objects.requireNonNull(e1.getMessage()));
+                        Log.e("ERROR", Objects.requireNonNull(e2.getMessage()));
+                        Log.e("ERROR", Objects.requireNonNull(e3.getMessage()));
                     }
                 }
             }
