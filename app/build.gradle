@@ -1,0 +1,46 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    def envProperties = new Properties()
+    file("env.properties").withInputStream {
+        envProperties.load(it)
+    }
+
+    defaultConfig {
+        applicationId "com.desmg.utility"
+        compileSdk 33
+        minSdkVersion 33
+        //noinspection OldTargetApi
+        targetSdkVersion 33
+        buildToolsVersion = '33.0.2'
+        versionCode 30001
+        versionName '3.0.1'
+        buildConfigField("String", "SERVER_URL", envProperties.getProperty("SERVER_URL"))
+        buildConfigField("String", "API_KEY", envProperties.getProperty("API_KEY"))
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    buildFeatures {
+        buildConfig = true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    namespace 'com.desmg.utility'
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    //noinspection GradleDependency
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.8'
+}
