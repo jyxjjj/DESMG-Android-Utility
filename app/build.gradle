@@ -34,6 +34,8 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
     namespace 'com.desmg.utility'
+    compileSdk 33
+    buildToolsVersion '34.0.0'
 }
 
 dependencies {
